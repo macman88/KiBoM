@@ -30,6 +30,7 @@ class BomPref:
     OPT_INCLUDE_VERSION = "include_version_number"
     OPT_DEFAULT_BOARDS = "number_boards"
     OPT_DEFAULT_PCBCONFIG = "board_variant"
+    OPT_SEPARATOR_REF = "separator_ref"
 
     OPT_CONFIG_FIELD = "fit_field"
 
@@ -58,6 +59,7 @@ class BomPref:
 
         self.separatorCSV = None
         self.includeVersionNumber = True
+        self.separatorRef = " "
 
         # Default fields used to group components
         self.groups = [
@@ -143,6 +145,9 @@ class BomPref:
             else:
                 self.backup = False
 
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_SEPARATOR_REF):
+                self.separatorRef = cf.get(self.SECTION_GENERAL, self.OPT_SEPARATOR_REF)
+
             # Read out grouping colums
             if self.SECTION_GROUPING_FIELDS in cf.sections():
                 self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
@@ -208,6 +213,9 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Default PCB variant if none given on CLI with -r')
         cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG, self.pcbConfig)
+
+        cf.set(self.SECTION_GENERAL, '; Separator between component references (e.g. C1 C2 C3)')
+        cf.set(self.SECTION_GENERAL, self.OPT_SEPARATOR_REF, self.separatorRef)
 
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")

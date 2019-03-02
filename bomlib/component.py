@@ -419,7 +419,7 @@ class ComponentGroup():
     def getRefs(self):
         #print([c.getRef() for c in self.components]))
         #return " ".join([c.getRef() for c in self.components])
-        return " ".join([c.getRef() for c in self.components])
+        return self.prefs.separatorRef.join([c.getRef() for c in self.components])
 
     def getAltRefs(self, wrapN=None):
         S = joiner()
