@@ -236,17 +236,21 @@ class Component():
 
         opts = check.split(",")
 
-        result = True
 
+        included = not bool(opts) #included by default if no options
+        excluded = False
+
+        config = self.prefs.pcbConfig.lower()
         for opt in opts:
             #options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith('-') and opt[1:].lower() == self.prefs.pcbConfig.lower():
-                result = False
+            if opt.startswith('-') and opt[1:].lower() == config:
+                excluded = True
                 break
-            if opt.startswith("+"):
-                result = False
-                if opt[1:].lower() == self.prefs.pcbConfig.lower():
-                    result = True
+            if opt.startswith("+") and opt[1:].lower() == config:
+                included = True
+                break
+
+        result = included and not excluded
 
         #by default, part is fitted
         return result
@@ -340,7 +344,7 @@ class joiner:
         refstr = u''
         c = 0
         for Q in self.stack:
-            if N!=None and c%N==0 and c!=0:
+            if bool(N) and c!=0 and c%N==0:
                 refstr+=u'\n'
             elif c!=0:
                 refstr+=sep
@@ -351,7 +355,7 @@ class joiner:
                 c+=1
             else:
                 #do we have space?
-                if (c+1)%N==0: #no
+                if bool(N) and (c+1)%N==0: #no
                     refstr+=u'\n'
                     c += 1
 
